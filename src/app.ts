@@ -23,7 +23,8 @@ export const buildServer = () => {
 			"http://localhost:5000",
 			"http://127.0.0.1:3000",
 			"http://127.0.0.1:5000",
-			"https://muras.vercel.app"
+			"https://muras.vercel.app",
+			"https://muras-test.netlify.app"
 		],
 		credentials: true
 	});
