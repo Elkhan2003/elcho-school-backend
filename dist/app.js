@@ -41,7 +41,7 @@ const buildServer = () => {
                 path: "/"
             }
             : {
-                path: "/",
+                path: "/"
                 // secure: true,
                 // sameSite: "none",
                 // domain: "muras.vercel.app"
@@ -56,12 +56,6 @@ const buildServer = () => {
             message: "Hello World!",
             //@ts-ignore
             user: req.user?.displayName
-        });
-    });
-    server.get("/logout", (req, res) => {
-        req.logout();
-        res.status(200).send({
-            success: true
         });
     });
     // ! Google Authenticator
@@ -83,6 +77,12 @@ const buildServer = () => {
         return user;
     });
     server.get("/login", passport_1.default.authenticate("google", { scope: ["email", "profile"] }));
+    server.get("/logout", (req, res) => {
+        req.logout();
+        res.redirect(process.env.NODE_ENV === "development"
+            ? process.env.REDIRECT_URL_DEV
+            : process.env.REDIRECT_URL_PROD);
+    });
     server.get("/auth/google/callback", passport_1.default.authenticate("google", {
         successRedirect: "/",
         failureRedirect: "/auth/google/failure"

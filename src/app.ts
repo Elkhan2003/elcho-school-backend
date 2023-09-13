@@ -47,7 +47,7 @@ export const buildServer = () => {
 						path: "/"
 				  }
 				: {
-						path: "/",
+						path: "/"
 						// secure: true,
 						// sameSite: "none",
 						// domain: "muras.vercel.app"
@@ -64,13 +64,6 @@ export const buildServer = () => {
 			message: "Hello World!",
 			//@ts-ignore
 			user: req.user?.displayName
-		});
-	});
-
-	server.get("/logout", (req, res) => {
-		req.logout();
-		res.status(200).send({
-			success: true
 		});
 	});
 
@@ -111,6 +104,15 @@ export const buildServer = () => {
 		"/login",
 		fastifyPassport.authenticate("google", { scope: ["email", "profile"] })
 	);
+
+	server.get("/logout", (req, res) => {
+		req.logout();
+		res.redirect(
+			process.env.NODE_ENV === "development"
+				? process.env.REDIRECT_URL_DEV!
+				: process.env.REDIRECT_URL_PROD!
+		);
+	});
 
 	server.get(
 		"/auth/google/callback",
