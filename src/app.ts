@@ -48,9 +48,9 @@ export const buildServer = () => {
 				  }
 				: {
 						path: "/",
-						secure: true,
-						sameSite: "none",
-						domain: "muras.vercel.app"
+						// secure: true,
+						// sameSite: "none",
+						// domain: "muras.vercel.app"
 				  }
 	});
 

@@ -42,9 +42,9 @@ const buildServer = () => {
             }
             : {
                 path: "/",
-                secure: true,
-                sameSite: "none",
-                domain: "muras.vercel.app"
+                // secure: true,
+                // sameSite: "none",
+                // domain: "muras.vercel.app"
             }
     });
     server.register(passport_1.default.initialize());
