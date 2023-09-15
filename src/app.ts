@@ -7,6 +7,7 @@ import fastifyCors from "@fastify/cors";
 import fastifySecureSession from "@fastify/secure-session";
 import fastifyPassport from "@fastify/passport";
 import fastifyAuth from "@fastify/auth";
+import { PassportType } from "./interfaces/passportType";
 // @ts-ignore
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import routes from "./routes/index";
@@ -32,7 +33,8 @@ export const buildServer = () => {
 			"http://127.0.0.1:5000",
 			"https://muras.vercel.app",
 			"https://muras-test.netlify.app",
-			"https://muras-backend-f4e607bd17df.herokuapp.com"
+			"https://muras-backend-f4e607bd17df.herokuapp.com",
+			"https://muras-official.kg"
 		],
 		credentials: true
 	});
@@ -83,11 +85,15 @@ export const buildServer = () => {
 				request: any,
 				accessToken: any,
 				refreshToken: any,
-				profile: any,
+				profile: PassportType,
 				done: any
 			) {
-				console.log(profile);
-				done(null, profile);
+				console.log(profile._json);
+				// const authUser = await server.prisma.user.findFirst({
+				// 	where: { email: profile.emails }
+				// });
+				// console.log(authUser);
+				done(null, profile._json);
 			}
 		)
 	);
@@ -104,6 +110,18 @@ export const buildServer = () => {
 		"/login",
 		fastifyPassport.authenticate("google", { scope: ["email", "profile"] })
 	);
+
+	server.get("/user", (req: any, res) => {
+		if (req.user) {
+			res.status(200).send({
+				user: req.user._json
+			});
+		} else {
+			res.status(401).send({
+				message: "Пользователь не аутентифицирован."
+			});
+		}
+	});
 
 	server.get("/logout", (req, res) => {
 		req.logout();

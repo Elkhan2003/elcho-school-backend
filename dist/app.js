@@ -68,6 +68,10 @@ const buildServer = () => {
         passReqToCallback: true
     }, async function (request, accessToken, refreshToken, profile, done) {
         console.log(profile);
+        // const authUser = await server.prisma.user.findFirst({
+        // 	where: { email: profile.emails }
+        // });
+        // console.log(authUser);
         done(null, profile);
     }));
     passport_1.default.registerUserSerializer(async (user, req) => {
@@ -77,6 +81,11 @@ const buildServer = () => {
         return user;
     });
     server.get("/login", passport_1.default.authenticate("google", { scope: ["email", "profile"] }));
+    server.get("/user", (req, res) => {
+        res.status(200).send({
+            user: req.user
+        });
+    });
     server.get("/logout", (req, res) => {
         req.logout();
         res.redirect(process.env.NODE_ENV === "development"
