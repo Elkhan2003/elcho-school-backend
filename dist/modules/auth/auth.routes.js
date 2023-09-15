@@ -12,5 +12,9 @@ async function default_1(app) {
     app.post("/me", {
         schema: auth_schemas_1.default.getMeSchema
     }, auth_controllers_1.default.getMeData);
+    app.get("/login", auth_controllers_1.default.loginUser);
+    app.get("/user", auth_controllers_1.default.getUser);
+    app.get("/logout", auth_controllers_1.default.logoutUser);
+    app.get("/auth/google/callback", auth_controllers_1.default.authGoogleCallback);
 }
 exports.default = default_1;

@@ -17,4 +17,12 @@ export default async function (app: FastifyInstance) {
 		},
 		authControllers.getMeData
 	);
+
+	app.get("/login", authControllers.loginUser);
+
+	app.get("/user", authControllers.getUser);
+
+	app.get("/logout", authControllers.logoutUser);
+
+	app.get("/auth/google/callback", authControllers.authGoogleCallback);
 }

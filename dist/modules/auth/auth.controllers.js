@@ -1,5 +1,34 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const passport_1 = __importDefault(require("@fastify/passport"));
+const loginUser = passport_1.default.authenticate("google", {
+    scope: ["email", "profile"]
+});
+const getUser = async (req, res) => {
+    if (req.user) {
+        res.status(200).send({
+            user: req.user._json
+        });
+    }
+    else {
+        res.status(401).send({
+            message: "The user is not authenticated."
+        });
+    }
+};
+const logoutUser = (req, res) => {
+    req.logout();
+    res.redirect(process.env.NODE_ENV === "development"
+        ? process.env.REDIRECT_URL_DEV
+        : process.env.REDIRECT_URL_PROD);
+};
+const authGoogleCallback = passport_1.default.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/auth/google/failure"
+});
 const authUser = async (req, res) => {
     const { user } = req.body;
     const prisma = req.server.prisma;
@@ -43,4 +72,11 @@ const getMeData = async (req, res) => {
         data: authUserData
     });
 };
-exports.default = { authUser, getMeData };
+exports.default = {
+    authUser,
+    getMeData,
+    loginUser,
+    getUser,
+    logoutUser,
+    authGoogleCallback
+};
