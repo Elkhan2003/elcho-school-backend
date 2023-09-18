@@ -29,46 +29,55 @@ const passport = async (app) => {
     app.register(passport_1.default.initialize());
     app.register(passport_1.default.secureSession());
     app.register(auth_1.default);
-    // ! Google Authenticator
-    passport_1.default.use(new passport_google_oauth2_1.Strategy({
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.NODE_ENV === "development"
-            ? `${process.env.BACKEND_BASE_URL_DEV}/api/v1/auth/google/callback`
-            : `${process.env.BACKEND_BASE_URL_PROD}/api/v1/auth/google/callback`,
-        passReqToCallback: true
-    }, async function (request, accessToken, refreshToken, profile, done) {
-        console.log(profile._json);
-        await authUserToSupabase(profile._json.given_name, profile._json.family_name, profile._json.email, profile._json.picture, app.prisma);
-        done(null, profile);
-    }));
     passport_1.default.registerUserSerializer(async (user, req) => {
         return user;
     });
     passport_1.default.registerUserDeserializer(async (user, req) => {
         return user;
     });
+    // ! Google Authenticator
+    passport_1.default.use(new passport_google_oauth2_1.Strategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.NODE_ENV === "development"
+            ? `${process.env.BACKEND_BASE_URL_DEV}/api/auth/callback/google`
+            : `${process.env.BACKEND_BASE_URL_PROD}/api/auth/callback/google`,
+        passReqToCallback: true
+    }, async function (request, accessToken, refreshToken, profile, done) {
+        try {
+            const profileData = await app.prisma.user.findFirst({
+                where: { email: profile._json.email }
+            });
+            if (!profileData) {
+                await app.prisma.user.create({
+                    data: {
+                        firstName: profile._json.given_name || "",
+                        lastName: profile._json.family_name || "",
+                        email: profile._json.email,
+                        password: "",
+                        photo: profile._json.picture
+                    }
+                });
+                const newUser = await app.prisma.user.findFirst({
+                    where: { email: profile._json.email }
+                });
+                return done(null, newUser);
+            }
+            else {
+                return done(null, profileData);
+            }
+        }
+        catch (err) {
+            console.log(`${err}`);
+        }
+    }));
+    app.get("/api/auth/callback/google", passport_1.default.authenticate("google", {
+        successRedirect: process.env.NODE_ENV === "development"
+            ? `${process.env.FRONTEND_BASE_URL_DEV}/`
+            : `${process.env.FRONTEND_BASE_URL_PROD}/`,
+        failureRedirect: process.env.NODE_ENV === "development"
+            ? `${process.env.FRONTEND_BASE_URL_DEV}/login`
+            : `${process.env.FRONTEND_BASE_URL_PROD}/login`
+    }));
 };
 exports.default = (0, fastify_plugin_1.default)(passport);
-// authentication user
-const authUserToSupabase = async (first_name, last_name, email, photo, prisma) => {
-    try {
-        const authUser = await prisma.user.findFirst({
-            where: { email: email }
-        });
-        if (!authUser) {
-            await prisma.user.create({
-                data: {
-                    firstName: first_name || "",
-                    lastName: last_name || "",
-                    email: email,
-                    password: "",
-                    photo: photo
-                }
-            });
-        }
-    }
-    catch (err) {
-        console.log(`${err}`);
-    }
-};

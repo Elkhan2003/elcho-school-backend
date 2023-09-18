@@ -11,11 +11,12 @@ const authUser = {
             photo: zod_1.z.string(),
             phone: zod_1.z.string(),
             traffic: zod_1.z.string().optional()
-        }),
+        })
     }),
     response: zod_1.z.object({
-        success: zod_1.z.literal(true),
-        data: zod_1.z.any()
+        success: zod_1.z.boolean().optional(),
+        data: zod_1.z.any(),
+        message: zod_1.z.any()
     })
 };
 const authUserSchema = {
@@ -42,8 +43,9 @@ const getMe = {
         })
     }),
     response: zod_1.z.object({
-        success: zod_1.z.literal(true),
-        data: zod_1.z.any()
+        success: zod_1.z.boolean().optional(),
+        data: zod_1.z.any(),
+        message: zod_1.z.any()
     })
 };
 const getMeSchema = {

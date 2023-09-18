@@ -11,17 +11,18 @@ const sendSmsCodeVerify: RouteHandler<{
 	Body: z.TypeOf<typeof verifySchemas.sendSmsCodeVerification.body>;
 	Reply: z.TypeOf<typeof verifySchemas.sendSmsCodeVerification.response>;
 }> = async (req, res) => {
-	const { user } = req.body;
-	const isPhoneVerified = user.isPhoneVerified;
+	const user = req.user!;
+	const { phone, traffic } = req.body;
 
-	if (!isPhoneVerified && user.phone) {
+	if (!user.isPhoneVerified && phone) {
 		await req.server.prisma.user.update({
 			where: {
 				id: user.id
 			},
 			data: {
-				phone: user.phone,
-				isPhoneVerified: !isPhoneVerified
+				phone: phone,
+				isPhoneVerified: !user.isPhoneVerified,
+				traffic: traffic || "unknown"
 			}
 		});
 	}

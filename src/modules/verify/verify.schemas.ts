@@ -3,11 +3,8 @@ import { z } from "zod";
 
 const sendSmsCodeVerification = {
 	body: z.object({
-		user: z.object({
-			id: z.number(),
-			isPhoneVerified: z.boolean(),
-			phone: z.string(),
-		}),
+		phone: z.string(),
+		traffic: z.string().optional()
 	}),
 	response: z.object({
 		success: z.literal(true),

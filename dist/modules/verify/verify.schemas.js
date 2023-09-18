@@ -4,11 +4,8 @@ const zod_openapi_1 = require("@anatine/zod-openapi");
 const zod_1 = require("zod");
 const sendSmsCodeVerification = {
     body: zod_1.z.object({
-        user: zod_1.z.object({
-            id: zod_1.z.number(),
-            isPhoneVerified: zod_1.z.boolean(),
-            phone: zod_1.z.string(),
-        }),
+        phone: zod_1.z.string(),
+        traffic: zod_1.z.string().optional()
     }),
     response: zod_1.z.object({
         success: zod_1.z.literal(true),

@@ -5,16 +5,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import twilio from "twilio";
 // const client = twilio(accountSid, authToken);
 const sendSmsCodeVerify = async (req, res) => {
-    const { user } = req.body;
-    const isPhoneVerified = user.isPhoneVerified;
-    if (!isPhoneVerified && user.phone) {
+    const user = req.user;
+    const { phone, traffic } = req.body;
+    if (!user.isPhoneVerified && phone) {
         await req.server.prisma.user.update({
             where: {
                 id: user.id
             },
             data: {
-                phone: user.phone,
-                isPhoneVerified: !isPhoneVerified
+                phone: phone,
+                isPhoneVerified: !user.isPhoneVerified,
+                traffic: traffic || "unknown"
             }
         });
     }

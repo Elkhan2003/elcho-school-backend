@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { PrismaClient, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import fp from "fastify-plugin";
 import path from "path";
 import fs from "fs";
@@ -31,6 +31,14 @@ const passport = async (app: FastifyInstance) => {
 	app.register(fastifyPassport.secureSession());
 	app.register(fastifyAuth);
 
+	fastifyPassport.registerUserSerializer(async (user, req) => {
+		return user;
+	});
+
+	fastifyPassport.registerUserDeserializer(async (user, req) => {
+		return user;
+	});
+
 	// ! Google Authenticator
 	fastifyPassport.use(
 		new GoogleStrategy(
@@ -39,8 +47,8 @@ const passport = async (app: FastifyInstance) => {
 				clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 				callbackURL:
 					process.env.NODE_ENV === "development"
-						? `${process.env.BACKEND_BASE_URL_DEV}/api/v1/auth/google/callback`
-						: `${process.env.BACKEND_BASE_URL_PROD}/api/v1/auth/google/callback`,
+						? `${process.env.BACKEND_BASE_URL_DEV}/api/auth/callback/google`
+						: `${process.env.BACKEND_BASE_URL_PROD}/api/auth/callback/google`,
 				passReqToCallback: true
 			},
 			async function (
@@ -50,53 +58,47 @@ const passport = async (app: FastifyInstance) => {
 				profile: any,
 				done: any
 			) {
-				console.log(profile._json);
-				await authUserToSupabase(
-					profile._json.given_name,
-					profile._json.family_name,
-					profile._json.email,
-					profile._json.picture,
-					app.prisma
-				);
-				done(null, profile);
+				try {
+					const profileData = await app.prisma.user.findFirst({
+						where: { email: profile._json.email }
+					});
+					if (!profileData) {
+						await app.prisma.user.create({
+							data: {
+								firstName: profile._json.given_name || "",
+								lastName: profile._json.family_name || "",
+								email: profile._json.email,
+								password: "",
+								photo: profile._json.picture
+							} as User
+						});
+
+						const newUser = await app.prisma.user.findFirst({
+							where: { email: profile._json.email }
+						});
+						return done(null, newUser);
+					} else {
+						return done(null, profileData);
+					}
+				} catch (err) {
+					console.log(`${err}`);
+				}
 			}
 		)
 	);
 
-	fastifyPassport.registerUserSerializer(async (user, req) => {
-		return user;
-	});
-
-	fastifyPassport.registerUserDeserializer(async (user, req) => {
-		return user;
-	});
+	app.get(
+		"/api/auth/callback/google",
+		fastifyPassport.authenticate("google", {
+			successRedirect:
+				process.env.NODE_ENV === "development"
+					? `${process.env.FRONTEND_BASE_URL_DEV}/`
+					: `${process.env.FRONTEND_BASE_URL_PROD}/`,
+			failureRedirect:
+				process.env.NODE_ENV === "development"
+					? `${process.env.FRONTEND_BASE_URL_DEV}/login`
+					: `${process.env.FRONTEND_BASE_URL_PROD}/login`
+		})
+	);
 };
 export default fp(passport);
-
-// authentication user
-const authUserToSupabase = async (
-	first_name: string,
-	last_name: string,
-	email: string,
-	photo: string,
-	prisma: PrismaClient
-) => {
-	try {
-		const authUser = await prisma.user.findFirst({
-			where: { email: email }
-		});
-		if (!authUser) {
-			await prisma.user.create({
-				data: {
-					firstName: first_name || "",
-					lastName: last_name || "",
-					email: email,
-					password: "",
-					photo: photo
-				} as User
-			});
-		}
-	} catch (err) {
-		console.log(`${err}`);
-	}
-};
