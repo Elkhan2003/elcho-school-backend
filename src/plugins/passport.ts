@@ -20,10 +20,10 @@ const passport = async (app: FastifyInstance) => {
 						path: "/"
 				  }
 				: {
-						path: "/"
-						// secure: true,
-						// sameSite: "none",
-						// domain: "muras.vercel.app"
+						path: "/",
+						secure: true,
+						sameSite: "none",
+						domain: "muras-official.kg"
 				  }
 	});
 
