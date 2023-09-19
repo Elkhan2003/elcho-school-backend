@@ -22,10 +22,11 @@ const buildServer = () => {
             "http://127.0.0.1:3000",
             "http://127.0.0.1:5000",
             "http://localhost:5173",
-            "https://muras.vercel.app",
-            "https://muras-test.netlify.app",
             "https://muras-backend-f4e607bd17df.herokuapp.com",
-            "https://muras-official.kg"
+            "https://long-tan-termite-tutu.cyclic.cloud",
+            "https://muras-official.kg",
+            "https://muras-official.kg/",
+            "https://muras-official.kg/login"
         ],
         credentials: true
     });
