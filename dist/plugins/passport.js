@@ -20,10 +20,10 @@ const passport = async (app) => {
                 path: "/"
             }
             : {
-                path: "/",
-                secure: true,
-                sameSite: "none",
-                domain: "muras-official.kg"
+                path: "/"
+                // secure: true,
+                // sameSite: "none",
+                // domain: "muras-official.kg"
             }
     });
     app.register(passport_1.default.initialize());
