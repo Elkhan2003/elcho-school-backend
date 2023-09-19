@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("@fastify/passport"));
 const loginUser = passport_1.default.authenticate("google", {
-    scope: ["email", "profile"]
+    scope: ["profile", "email"]
 });
 const getUser = async (req, res) => {
     const user = req.user;
@@ -28,7 +28,7 @@ const logoutUser = (req, res) => {
     req.logout();
     res.redirect(process.env.NODE_ENV === "development"
         ? process.env.FRONTEND_BASE_URL_DEV
-        : process.env.FRONTEND_BASE_URL_DEV);
+        : process.env.FRONTEND_BASE_URL_PROD);
 };
 exports.default = {
     loginUser,
