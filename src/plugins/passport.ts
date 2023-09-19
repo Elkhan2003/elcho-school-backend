@@ -5,39 +5,19 @@ import path from "path";
 import fs from "fs";
 import fastifySecureSession from "@fastify/secure-session";
 import fastifyPassport from "@fastify/passport";
-import fastifyAuth from "@fastify/auth";
 // @ts-ignore
-import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 const passport = async (app: FastifyInstance) => {
 	app.register(fastifySecureSession, {
 		key: fs.readFileSync(path.join(__dirname, "/../..", "secret-key")),
-		logLevel: "debug",
-
-		cookie:
-			process.env.NODE_ENV === "development"
-				? {
-						path: "/"
-				  }
-				: {
-						path: "/"
-						// secure: true,
-						// sameSite: "none",
-						// domain: "muras-official.kg"
-				  }
+		cookie: {
+			path: "/"
+		}
 	});
 
 	app.register(fastifyPassport.initialize());
 	app.register(fastifyPassport.secureSession());
-	app.register(fastifyAuth);
-
-	fastifyPassport.registerUserSerializer(async (user, req) => {
-		return user;
-	});
-
-	fastifyPassport.registerUserDeserializer(async (user, req) => {
-		return user;
-	});
 
 	// ! Google Authenticator
 	fastifyPassport.use(
@@ -48,11 +28,9 @@ const passport = async (app: FastifyInstance) => {
 				callbackURL:
 					process.env.NODE_ENV === "development"
 						? `${process.env.BACKEND_BASE_URL_DEV}/api/auth/callback/google`
-						: `${process.env.BACKEND_BASE_URL_PROD}/api/auth/callback/google`,
-				passReqToCallback: true
+						: `${process.env.BACKEND_BASE_URL_PROD}/api/auth/callback/google`
 			},
 			async function (
-				request: any,
 				accessToken: any,
 				refreshToken: any,
 				profile: any,
@@ -76,9 +54,9 @@ const passport = async (app: FastifyInstance) => {
 						const newUser = await app.prisma.user.findFirst({
 							where: { email: profile._json.email }
 						});
-						return done(null, newUser);
+						return done(undefined, newUser);
 					} else {
-						return done(null, profileData);
+						return done(undefined, profileData);
 					}
 				} catch (err) {
 					console.log(`${err}`);
@@ -87,18 +65,28 @@ const passport = async (app: FastifyInstance) => {
 		)
 	);
 
+	fastifyPassport.registerUserSerializer(async (user, req) => {
+		return user;
+	});
+
+	fastifyPassport.registerUserDeserializer(async (user, req) => {
+		return user;
+	});
+
 	app.get(
 		"/api/auth/callback/google",
-		fastifyPassport.authenticate("google", {
-			successRedirect:
+		{
+			preValidation: fastifyPassport.authenticate("google", {
+				scope: ["profile", "email"]
+			})
+		},
+		async (req, res) => {
+			res.redirect(
 				process.env.NODE_ENV === "development"
 					? `${process.env.FRONTEND_BASE_URL_DEV}/`
-					: `${process.env.FRONTEND_BASE_URL_PROD}/`,
-			failureRedirect:
-				process.env.NODE_ENV === "development"
-					? `${process.env.FRONTEND_BASE_URL_DEV}/login`
-					: `${process.env.FRONTEND_BASE_URL_PROD}/login`
-		})
+					: `${process.env.FRONTEND_BASE_URL_PROD}/`
+			);
+		}
 	);
 };
 export default fp(passport);

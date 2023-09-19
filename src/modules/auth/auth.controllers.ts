@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import fastifyPassport from "@fastify/passport";
 
 const loginUser = fastifyPassport.authenticate("google", {
-	scope: ["email", "profile"]
+	scope: ["profile", "email"]
 });
 
 const getUser = async (req: FastifyRequest, res: FastifyReply) => {
@@ -29,7 +29,7 @@ const logoutUser = (req: FastifyRequest, res: FastifyReply) => {
 	res.redirect(
 		process.env.NODE_ENV === "development"
 			? process.env.FRONTEND_BASE_URL_DEV!
-			: process.env.FRONTEND_BASE_URL_DEV!
+			: process.env.FRONTEND_BASE_URL_PROD!
 	);
 };
 

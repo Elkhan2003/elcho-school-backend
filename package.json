@@ -16,6 +16,7 @@
 	"dependencies": {
 		"@anatine/zod-openapi": "^2.2.0",
 		"@fastify/auth": "^4.3.0",
+		"@fastify/cookie": "^9.0.4",
 		"@fastify/cors": "^8.3.0",
 		"@fastify/passport": "^2.3.0",
 		"@fastify/secure-session": "^7.1.0",
@@ -25,6 +26,7 @@
 		"fastify": "^4.22.0",
 		"fastify-plugin": "^4.5.1",
 		"passport-google-oauth2": "^0.2.0",
+		"passport-google-oauth20": "^2.0.0",
 		"twilio": "^4.16.0",
 		"zod": "^3.22.2"
 	},
