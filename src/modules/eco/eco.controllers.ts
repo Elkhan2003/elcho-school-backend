@@ -27,32 +27,33 @@ const sendProduct: RouteHandler<{
 	});
 };
 
-const getProduct = async (req: FastifyRequest, res: FastifyReply) => {
-	const productData = await req.server.prisma.product.findMany();
+const getProducts = async (req: FastifyRequest, res: FastifyReply) => {
+  const productData = await req.server.prisma.product.findMany();
 
-	if (productData.length > 0) {
-		const firstProduct = productData[0];
+  if (productData.length > 0) {
+    const products = productData.map((product) => ({
+      id: product.id,
+      title: product.title || "",
+      price: product.price || "",
+      description: product.description || "",
+      category: product.category || "",
+      image: product.image || "",
+      rating: {
+        rate: product.rate || "",
+        count: product.count || ""
+      }
+    }));
 
-		res.status(200).send({
-			id: firstProduct.id,
-			title: firstProduct.title || "",
-			price: firstProduct.price || "",
-			description: firstProduct.description || "",
-			category: firstProduct.category || "",
-			image: firstProduct.image || "",
-			rating: {
-				rate: firstProduct.rate || "",
-				count: firstProduct.count || ""
-			}
-		});
-	} else {
-		res.status(401).send({
-			message: "The user is not authenticated."
-		});
-	}
+    res.status(200).send(products);
+  } else {
+    res.status(401).send({
+      message: "No products found."
+    });
+  }
 };
+
 
 export default {
 	sendProduct,
-	getProduct
+	getProducts
 };

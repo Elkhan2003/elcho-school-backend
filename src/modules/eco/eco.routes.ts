@@ -10,5 +10,5 @@ export default async function (app: FastifyInstance) {
 		},
 		productControllers.sendProduct
 	);
-	app.get<any>("/get-product", productControllers.getProduct);
+	app.get<any>("/get-product", productControllers.getProducts);
 }
