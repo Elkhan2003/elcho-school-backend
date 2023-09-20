@@ -29,7 +29,8 @@ export const buildServer = () => {
 			"https://muras-auth-test.vercel.app",
 			"https://muras-backend-f4e607bd17df.herokuapp.com",
 			"https://long-tan-termite-tutu.cyclic.cloud",
-			"https://muras-official.kg"
+			"https://muras-official.kg",
+			"https://coursework-flowers.vercel.app"
 		],
 		credentials: true
 	});
