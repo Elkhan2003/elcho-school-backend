@@ -1,15 +1,10 @@
-import { FastifyInstance } from "fastify";
+import { Router } from "express";
 import productControllers from "./eco.controllers";
-import productSchemas from "./eco.schemas";
 
-export default async function (app: FastifyInstance) {
-	app.post<any>(
-		"/send-product",
-		{
-			schema: productSchemas.sendProductSchema
-		},
-		productControllers.sendProduct
-	);
-	app.get<any>("/get-products", productControllers.getProducts);
-	app.get<any>("/get-product/:id", productControllers.getProductId);
-}
+const router = Router();
+
+router.post("/send-product", productControllers.sendProduct);
+router.get("/get-products", productControllers.getProducts);
+router.get("/get-product/:id", productControllers.sendProduct);
+
+export default router;

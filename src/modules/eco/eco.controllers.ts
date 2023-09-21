@@ -1,15 +1,20 @@
-import { RouteHandler } from "fastify";
-import { z } from "zod";
-import productSchemas from "./eco.schemas";
-import { FastifyRequest, FastifyReply } from "fastify";
+import { Request, Response } from "express";
+import { prisma } from "../../plugins/prisma";
 
-const sendProduct: RouteHandler<{
-	Body: z.TypeOf<typeof productSchemas.sendProduct.body>;
-	Reply: z.TypeOf<typeof productSchemas.sendProduct.response>;
-}> = async (req, res) => {
-	const { product } = req.body;
+interface ProductType {
+	title: string;
+	price: string;
+	description: string;
+	category: string;
+	image: string;
+	rate: string;
+	count: string;
+}
 
-	await req.server.prisma.product.create({
+const sendProduct = async (req: Request, res: Response) => {
+	const { product }: { product: ProductType } = req.body;
+
+	await prisma.product.create({
 		data: {
 			title: product.title || "",
 			price: product.price || "",
@@ -21,14 +26,14 @@ const sendProduct: RouteHandler<{
 		}
 	});
 
-	await res.status(200).send({
+	res.status(200).send({
 		success: true,
 		data: product
 	});
 };
 
-const getProducts = async (req: FastifyRequest, res: FastifyReply) => {
-	const productData = await req.server.prisma.product.findMany();
+const getProducts = async (req: Request, res: Response) => {
+	const productData = await prisma.product.findMany();
 
 	if (productData.length > 0) {
 		const products = productData.map((product) => ({
@@ -53,12 +58,12 @@ const getProducts = async (req: FastifyRequest, res: FastifyReply) => {
 };
 
 const getProductId = async (
-	req: FastifyRequest<{ Params: { id: string } }>,
-	res: FastifyReply
+	req: Request<{ Params: { id: number } }>,
+	res: Response
 ) => {
-	const productId = parseInt(req.params.id, 10); // Parse id as an integer
+	const productId = req.params.Params.id;
 
-	const productData = await req.server.prisma.product.findFirst({
+	const productData = await prisma.product.findFirst({
 		where: { id: productId }
 	});
 

@@ -1,13 +1,8 @@
-import { FastifyInstance } from "fastify";
+import { Router } from "express";
 import errorControllers from "./error.controllers";
-import errorSchemas from "./error.schemas";
 
-export default async function (app: FastifyInstance) {
-	app.post<any>(
-		"/error",
-		{
-			schema: errorSchemas.sendErrorSchema
-		},
-		errorControllers.sendError
-	);
-}
+const router = Router();
+
+router.post("/error", errorControllers.sendError);
+
+export default router;

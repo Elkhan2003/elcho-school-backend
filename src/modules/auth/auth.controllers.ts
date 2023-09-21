@@ -1,36 +1,41 @@
-import { FastifyRequest, FastifyReply } from "fastify";
-import fastifyPassport from "@fastify/passport";
+import { Request, Response, NextFunction } from "express";
+import passport from "passport";
+import { prisma, User } from "../../plugins/prisma";
 
-const loginUser = fastifyPassport.authenticate("google", {
+const loginUser = passport.authenticate("google", {
 	scope: ["profile", "email"]
 });
 
-const getUser = async (req: FastifyRequest, res: FastifyReply) => {
-	const user = req.user!;
+const getUser = async (req: Request, res: Response) => {
+	const user = req.user as User | undefined;
 
-	const profileData = await req.server.prisma.user.findFirst({
-		where: { id: user.id }
-	});
-
-	if (profileData) {
-		res.status(200).send({
-			success: true,
-			user: profileData
-		});
-	} else {
-		res.status(401).send({
+	if (!user) {
+		return res.status(401).send({
 			message: "The user is not authenticated."
 		});
 	}
+
+	const profileData = await prisma.user.findFirst({
+		where: { id: user.id }
+	});
+
+	res.status(200).send({
+		success: true,
+		user: profileData
+	});
 };
 
-const logoutUser = (req: FastifyRequest, res: FastifyReply) => {
-	req.logout();
-	res.redirect(
-		process.env.NODE_ENV === "development"
-			? process.env.FRONTEND_BASE_URL_DEV!
-			: process.env.FRONTEND_BASE_URL_PROD!
-	);
+const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+		res.redirect(
+			process.env.NODE_ENV === "development"
+				? process.env.FRONTEND_BASE_URL_DEV!
+				: process.env.FRONTEND_BASE_URL_PROD!
+		);
+	});
 };
 
 export default {

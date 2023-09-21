@@ -1,21 +1,22 @@
-import { RouteHandler } from "fastify";
-import { z } from "zod";
-import verifySchemas from "./verify.schemas";
+import { Request, Response } from "express";
+import { prisma, User } from "../../plugins/prisma";
 
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
 // import twilio from "twilio";
 // const client = twilio(accountSid, authToken);
 
-const sendSmsCodeVerify: RouteHandler<{
-	Body: z.TypeOf<typeof verifySchemas.sendSmsCodeVerification.body>;
-	Reply: z.TypeOf<typeof verifySchemas.sendSmsCodeVerification.response>;
-}> = async (req, res) => {
-	const user = req.user!;
-	const { phone, traffic } = req.body;
+interface bodyTypes {
+	phone: string;
+	traffic: string | undefined;
+}
+
+const sendSmsCodeVerify = async (req: Request, res: Response) => {
+	const user = req.user! as User;
+	const { phone, traffic } = req.body as bodyTypes;
 
 	if (!user.isPhoneVerified && phone) {
-		await req.server.prisma.user.update({
+		const verifyUser = await prisma.user.update({
 			where: {
 				id: user.id
 			},
@@ -25,20 +26,14 @@ const sendSmsCodeVerify: RouteHandler<{
 				traffic: traffic || "unknown"
 			}
 		});
+
+		res.status(200).send({
+			success: true,
+			data: {
+				verifyUser
+			}
+		});
 	}
-
-	const verifiedUser = await req.server.prisma.user.findUnique({
-		where: {
-			id: user.id
-		}
-	});
-
-	await res.status(200).send({
-		success: true,
-		data: {
-			verifiedUser
-		}
-	});
 };
 
 export default {

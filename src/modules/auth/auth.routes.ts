@@ -1,10 +1,10 @@
-import { FastifyInstance } from "fastify";
+import { Router } from "express";
 import authControllers from "./auth.controllers";
 
-export default async function (app: FastifyInstance) {
-	app.get("/login", authControllers.loginUser);
+const router = Router();
 
-	app.get("/user", authControllers.getUser);
+router.get("/login", authControllers.loginUser);
+router.get("/user", authControllers.getUser);
+router.get("/logout", authControllers.logoutUser);
 
-	app.get("/logout", authControllers.logoutUser);
-}
+export default router;

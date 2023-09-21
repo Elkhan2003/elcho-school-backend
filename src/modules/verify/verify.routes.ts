@@ -1,13 +1,8 @@
-import { FastifyInstance } from "fastify";
+import { Router } from "express";
 import verifyControllers from "./verify.controllers";
-import verifySchemas from "./verify.schemas";
 
-export default async function (app: FastifyInstance) {
-	app.post<any>(
-		"/send-sms",
-		{
-			schema: verifySchemas.sendSmsCodeVerificationSchema
-		},
-		verifyControllers.sendSmsCodeVerify
-	);
-}
+const router = Router();
+
+router.post("/send-sms", verifyControllers.sendSmsCodeVerify);
+
+export default router;

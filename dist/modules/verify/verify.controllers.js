@@ -1,14 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// import twilio from "twilio";
-// const client = twilio(accountSid, authToken);
+const prisma_1 = require("../../plugins/prisma");
 const sendSmsCodeVerify = async (req, res) => {
     const user = req.user;
     const { phone, traffic } = req.body;
     if (!user.isPhoneVerified && phone) {
-        await req.server.prisma.user.update({
+        const verifyUser = await prisma_1.prisma.user.update({
             where: {
                 id: user.id
             },
@@ -18,18 +15,13 @@ const sendSmsCodeVerify = async (req, res) => {
                 traffic: traffic || "unknown"
             }
         });
+        res.status(200).send({
+            success: true,
+            data: {
+                verifyUser
+            }
+        });
     }
-    const verifiedUser = await req.server.prisma.user.findUnique({
-        where: {
-            id: user.id
-        }
-    });
-    await res.status(200).send({
-        success: true,
-        data: {
-            verifiedUser
-        }
-    });
 };
 exports.default = {
     sendSmsCodeVerify
