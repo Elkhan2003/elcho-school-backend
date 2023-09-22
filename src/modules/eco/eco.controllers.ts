@@ -57,11 +57,8 @@ const getProducts = async (req: Request, res: Response) => {
 	}
 };
 
-const getProductId = async (
-	req: Request<{ Params: { id: number } }>,
-	res: Response
-) => {
-	const productId = req.params.Params.id;
+const getProductId = async (req: Request, res: Response) => {
+	const productId = Number(req.params.id);
 
 	const productData = await prisma.product.findFirst({
 		where: { id: productId }
