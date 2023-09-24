@@ -43,7 +43,7 @@ const getProducts = async (req, res) => {
     }
 };
 const getProductId = async (req, res) => {
-    const productId = req.params.Params.id;
+    const productId = Number(req.params.id);
     const productData = await prisma_1.prisma.product.findFirst({
         where: { id: productId }
     });
