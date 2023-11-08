@@ -15,21 +15,24 @@ const buildServer = () => {
     // Middleware
     server.use(express_1.default.urlencoded({ extended: true }));
     server.use(express_1.default.json());
-    server.use((0, cors_1.default)({
-        origin: [
-            "http://localhost:3000",
-            "http://localhost:5000",
-            "http://127.0.0.1:3000",
-            "http://127.0.0.1:5000",
-            "http://localhost:5173",
-            "https://muras-auth-test.vercel.app",
-            "https://coursework-flowers.netlify.app",
-            "https://muras-backend-f4e607bd17df.herokuapp.com",
-            "https://muras-official.kg",
-            "https://long-tan-termite-tutu.cyclic.cloud"
-        ],
-        credentials: true
-    }));
+    server.use((0, cors_1.default)());
+    // server.use(
+    // 	cors({
+    // 		origin: [
+    // 			"http://localhost:3000",
+    // 			"http://localhost:5000",
+    // 			"http://127.0.0.1:3000",
+    // 			"http://127.0.0.1:5000",
+    // 			"http://localhost:5173",
+    // 			"https://muras-auth-test.vercel.app",
+    // 			"https://coursework-flowers.netlify.app",
+    // 			"https://muras-backend-f4e607bd17df.herokuapp.com",
+    // 			"https://muras-official.kg",
+    // 			"https://long-tan-termite-tutu.cyclic.cloud"
+    // 		],
+    // 		credentials: true
+    // 	})
+    // );
     server.use(auth_1.auth);
     server.get("/", (req, res) => {
         res.status(200).send({
