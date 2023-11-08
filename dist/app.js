@@ -25,7 +25,8 @@ const buildServer = () => {
             "https://muras-auth-test.vercel.app",
             "https://coursework-flowers.netlify.app",
             "https://muras-backend-f4e607bd17df.herokuapp.com",
-            "https://muras-official.kg"
+            "https://muras-official.kg",
+            "https://long-tan-termite-tutu.cyclic.cloud"
         ],
         credentials: true
     }));
