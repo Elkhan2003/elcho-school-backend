@@ -15,15 +15,16 @@ model User {
   firstName       String
   lastName        String
   role            UserRole @default(USER)
-  email           String   @unique
+  auth            String
+  login           String   @unique
   password        String
   isActive        Boolean  @default(true)
+  photo           String?
+  phone           String?
+  isPhoneVerified Boolean  @default(false)
+  traffic         String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  photo           String?
-  isPhoneVerified Boolean  @default(false)
-  phone           String?
-  traffic         String?
   Order           Order[]
 }
 

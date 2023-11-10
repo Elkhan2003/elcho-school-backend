@@ -11,30 +11,28 @@ export const buildServer = () => {
 	// Middleware
 	server.use(express.urlencoded({ extended: true }));
 	server.use(express.json());
-	server.use(cors());
-	// server.use(
-	// 	cors({
-	// 		origin: [
-	// 			"http://localhost:3000",
-	// 			"http://localhost:5000",
-	// 			"http://127.0.0.1:3000",
-	// 			"http://127.0.0.1:5000",
-	// 			"http://localhost:5173",
-	// 			"https://muras-auth-test.vercel.app",
-	// 			"https://coursework-flowers.netlify.app",
-	// 			"https://muras-backend-f4e607bd17df.herokuapp.com",
-	// 			"https://muras-official.kg",
-	// 			"https://long-tan-termite-tutu.cyclic.cloud"
-	// 		],
-	// 		credentials: true
-	// 	})
-	// );
+	server.use(
+		cors({
+			origin: [
+				"http://localhost:3000",
+				"http://localhost:5000",
+				"http://127.0.0.1:3000",
+				"http://127.0.0.1:5000",
+				"http://localhost:5173",
+				"https://muras-auth-test.vercel.app",
+				"https://muras-official.kg"
+			],
+			credentials: true
+		})
+	);
 
 	server.use(auth);
 
 	server.get("/", (req, res) => {
+		const user = req.user;
 		res.status(200).send({
-			message: "Hello World!"
+			message: "Hello World!",
+			user: user || "The user is not authenticated"
 		});
 	});
 

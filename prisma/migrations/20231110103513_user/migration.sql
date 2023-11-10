@@ -7,7 +7,8 @@ CREATE TABLE "User" (
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
-    "email" TEXT NOT NULL,
+    "auth" TEXT NOT NULL,
+    "login" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -21,4 +22,4 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "User_login_key" ON "User"("login");

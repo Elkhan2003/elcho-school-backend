@@ -1,13 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
-import { prisma, User } from "../../plugins/prisma";
 
-const loginUser = passport.authenticate("google", {
+const loginUserGoogle = passport.authenticate("google", {
 	scope: ["profile", "email"]
 });
 
+const loginUserGitHub = passport.authenticate("github", {
+	scope: ["user:email"]
+});
+
 const getUser = async (req: Request, res: Response) => {
-	const user = req.user as User | undefined;
+	const user = req.user;
 
 	if (!user) {
 		return res.status(401).send({
@@ -15,13 +18,9 @@ const getUser = async (req: Request, res: Response) => {
 		});
 	}
 
-	const profileData = await prisma.user.findFirst({
-		where: { id: user.id }
-	});
-
 	res.status(200).send({
 		success: true,
-		user: profileData
+		user: user
 	});
 };
 
@@ -39,7 +38,8 @@ const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default {
-	loginUser,
+	loginUserGoogle,
+	loginUserGitHub,
 	getUser,
 	logoutUser
 };
