@@ -32,7 +32,7 @@ process.env.NODE_ENV === "development"
 					.readFileSync(path.join(__dirname, "/../..", "secret-key"))
 					.toString(),
 				resave: true,
-				saveUninitialized: true,
+				saveUninitialized: false,
 				cookie: {
 					sameSite: "none",
 					secure: true,
