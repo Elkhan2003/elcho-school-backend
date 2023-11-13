@@ -26,7 +26,7 @@ process.env.NODE_ENV === "development"
         cookie: {
             sameSite: "lax",
             secure: false,
-            maxAge: 1000 * 60 * 60 * 24 * 7
+            maxAge: 1000 * 60 * 60 * 24 * 1
         },
         store: new prisma_session_store_1.PrismaSessionStore(new client_1.PrismaClient(), {
             checkPeriod: 1 * 60 * 1000,
@@ -43,7 +43,7 @@ process.env.NODE_ENV === "development"
         cookie: {
             sameSite: "none",
             secure: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7
+            maxAge: 1000 * 60 * 60 * 24 * 1
         },
         store: new prisma_session_store_1.PrismaSessionStore(new client_1.PrismaClient(), {
             checkPeriod: 1 * 60 * 1000,
