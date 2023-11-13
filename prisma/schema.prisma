@@ -28,6 +28,13 @@ model User {
   Order           Order[]
 }
 
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.Text
+  expiresAt DateTime
+}
+
 model Error {
   id        Int      @id @default(autoincrement())
   code      String
