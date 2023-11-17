@@ -7,7 +7,6 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
-import { PrismaClient } from "@prisma/client";
 
 export const auth = express();
 
@@ -26,7 +25,7 @@ process.env.NODE_ENV === "development"
 					secure: false,
 					maxAge: 1000 * 60 * 60 * 24 * 1
 				},
-				store: new PrismaSessionStore(new PrismaClient(), {
+				store: new PrismaSessionStore(prisma, {
 					checkPeriod: 1 * 60 * 1000, //ms
 					dbRecordIdIsSessionId: true,
 					dbRecordIdFunction: undefined
@@ -45,7 +44,7 @@ process.env.NODE_ENV === "development"
 					secure: true,
 					maxAge: 1000 * 60 * 60 * 24 * 1
 				},
-				store: new PrismaSessionStore(new PrismaClient(), {
+				store: new PrismaSessionStore(prisma, {
 					checkPeriod: 1 * 60 * 1000, //ms
 					dbRecordIdIsSessionId: true,
 					dbRecordIdFunction: undefined
