@@ -18,18 +18,18 @@ process.env.NODE_ENV === "development"
 				secret: fs
 					.readFileSync(path.join(__dirname, "/../..", "secret-key"))
 					.toString(),
-				resave: true,
-				saveUninitialized: true,
+				resave: false,
+				saveUninitialized: false,
 				cookie: {
 					sameSite: "lax",
 					secure: false,
 					maxAge: 1000 * 60 * 60 * 24 * 1
-				},
-				store: new PrismaSessionStore(prisma, {
-					checkPeriod: 1 * 60 * 1000, //ms
-					dbRecordIdIsSessionId: true,
-					dbRecordIdFunction: undefined
-				})
+				}
+				// store: new PrismaSessionStore(prisma, {
+				// 	checkPeriod: 1 * 60 * 1000, //ms
+				// 	dbRecordIdIsSessionId: true,
+				// 	dbRecordIdFunction: undefined
+				// })
 			})
 	  )
 	: auth.use(
@@ -37,18 +37,18 @@ process.env.NODE_ENV === "development"
 				secret: fs
 					.readFileSync(path.join(__dirname, "/../..", "secret-key"))
 					.toString(),
-				resave: true,
-				saveUninitialized: true,
+				resave: false,
+				saveUninitialized: false,
 				cookie: {
 					sameSite: "none",
 					secure: true,
 					maxAge: 1000 * 60 * 60 * 24 * 1
-				},
-				store: new PrismaSessionStore(prisma, {
-					checkPeriod: 1 * 60 * 1000, //ms
-					dbRecordIdIsSessionId: true,
-					dbRecordIdFunction: undefined
-				})
+				}
+				// store: new PrismaSessionStore(prisma, {
+				// 	checkPeriod: 1 * 60 * 1000, //ms
+				// 	dbRecordIdIsSessionId: true,
+				// 	dbRecordIdFunction: undefined
+				// })
 			})
 	  );
 
