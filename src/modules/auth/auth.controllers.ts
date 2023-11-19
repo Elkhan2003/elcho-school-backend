@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
+import { prisma, User } from "../../plugins/prisma";
 
 const loginUserGoogle = passport.authenticate("google", {
 	scope: ["profile", "email"]
@@ -10,7 +11,7 @@ const loginUserGitHub = passport.authenticate("github", {
 });
 
 const getUser = async (req: Request, res: Response) => {
-	const user = req.user;
+	const user = req.user as User;
 
 	if (!user) {
 		return res.status(401).send({
@@ -18,9 +19,15 @@ const getUser = async (req: Request, res: Response) => {
 		});
 	}
 
+	const userData = await prisma.user.findFirst({
+		where: {
+			login: user.login
+		} as User
+	});
+
 	res.status(200).send({
 		success: true,
-		user: user
+		user: userData
 	});
 };
 

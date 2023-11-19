@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
+const prisma_1 = require("../../plugins/prisma");
 const loginUserGoogle = passport_1.default.authenticate("google", {
     scope: ["profile", "email"]
 });
@@ -17,9 +18,14 @@ const getUser = async (req, res) => {
             message: "The user is not authenticated."
         });
     }
+    const userData = await prisma_1.prisma.user.findFirst({
+        where: {
+            login: user.login
+        }
+    });
     res.status(200).send({
         success: true,
-        user: user
+        user: userData
     });
 };
 const logoutUser = async (req, res, next) => {

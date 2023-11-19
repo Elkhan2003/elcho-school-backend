@@ -24,12 +24,12 @@ process.env.NODE_ENV === "development"
 					sameSite: "lax",
 					secure: false,
 					maxAge: 1000 * 60 * 60 * 24 * 1
-				}
-				// store: new PrismaSessionStore(prisma, {
-				// 	checkPeriod: 1 * 60 * 1000, //ms
-				// 	dbRecordIdIsSessionId: true,
-				// 	dbRecordIdFunction: undefined
-				// })
+				},
+				store: new PrismaSessionStore(prisma, {
+					checkPeriod: 1 * 60 * 1000, //ms
+					dbRecordIdIsSessionId: true,
+					dbRecordIdFunction: undefined
+				})
 			})
 	  )
 	: auth.use(
@@ -43,12 +43,12 @@ process.env.NODE_ENV === "development"
 					sameSite: "none",
 					secure: true,
 					maxAge: 1000 * 60 * 60 * 24 * 1
-				}
-				// store: new PrismaSessionStore(prisma, {
-				// 	checkPeriod: 1 * 60 * 1000, //ms
-				// 	dbRecordIdIsSessionId: true,
-				// 	dbRecordIdFunction: undefined
-				// })
+				},
+				store: new PrismaSessionStore(prisma, {
+					checkPeriod: 1 * 60 * 1000, //ms
+					dbRecordIdIsSessionId: true,
+					dbRecordIdFunction: undefined
+				})
 			})
 	  );
 
