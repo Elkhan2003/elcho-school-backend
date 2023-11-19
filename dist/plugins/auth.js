@@ -13,7 +13,6 @@ const passport_1 = __importDefault(require("passport"));
 const passport_google_oauth20_1 = require("passport-google-oauth20");
 const passport_github2_1 = require("passport-github2");
 const prisma_session_store_1 = require("@quixo3/prisma-session-store");
-const client_1 = require("@prisma/client");
 exports.auth = (0, express_1.default)();
 exports.auth.set("trust proxy", 1);
 process.env.NODE_ENV === "development"
@@ -21,14 +20,14 @@ process.env.NODE_ENV === "development"
         secret: fs_1.default
             .readFileSync(path_1.default.join(__dirname, "/../..", "secret-key"))
             .toString(),
-        resave: false,
-        saveUninitialized: false,
+        resave: true,
+        saveUninitialized: true,
         cookie: {
             sameSite: "lax",
             secure: false,
             maxAge: 1000 * 60 * 60 * 24 * 1
         },
-        store: new prisma_session_store_1.PrismaSessionStore(new client_1.PrismaClient(), {
+        store: new prisma_session_store_1.PrismaSessionStore(prisma_1.prisma, {
             checkPeriod: 1 * 60 * 1000,
             dbRecordIdIsSessionId: true,
             dbRecordIdFunction: undefined
@@ -38,14 +37,14 @@ process.env.NODE_ENV === "development"
         secret: fs_1.default
             .readFileSync(path_1.default.join(__dirname, "/../..", "secret-key"))
             .toString(),
-        resave: false,
-        saveUninitialized: false,
+        resave: true,
+        saveUninitialized: true,
         cookie: {
             sameSite: "none",
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 1
         },
-        store: new prisma_session_store_1.PrismaSessionStore(new client_1.PrismaClient(), {
+        store: new prisma_session_store_1.PrismaSessionStore(prisma_1.prisma, {
             checkPeriod: 1 * 60 * 1000,
             dbRecordIdIsSessionId: true,
             dbRecordIdFunction: undefined
