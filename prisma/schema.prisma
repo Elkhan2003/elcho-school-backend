@@ -60,6 +60,7 @@ model Order {
 
 model Product {
   id          Int      @id @default(autoincrement())
+  author      String
   title       String
   price       String
   description String

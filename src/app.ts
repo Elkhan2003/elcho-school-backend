@@ -3,6 +3,7 @@ config();
 import express from "express";
 import cors from "cors";
 import routes from "./routes/index";
+import { User } from "./plugins/prisma";
 import { auth } from "./plugins/auth";
 
 export const buildServer = () => {
@@ -11,25 +12,28 @@ export const buildServer = () => {
 	// Middleware
 	server.use(express.urlencoded({ extended: true }));
 	server.use(express.json());
-	server.use(
-		cors({
-			origin: [
-				"http://localhost:3000",
-				"http://localhost:5000",
-				"http://127.0.0.1:3000",
-				"http://127.0.0.1:5000",
-				"http://localhost:5173",
-				"https://muras-auth-test.vercel.app",
-				"https://muras-official.kg"
-			],
-			credentials: true
-		})
-	);
+	// server.use(
+	// 	cors({
+	// 		origin: [
+	// 			"http://localhost:3000",
+	// 			"http://localhost:5000",
+	// 			"http://127.0.0.1:3000",
+	// 			"http://127.0.0.1:5000",
+	// 			"http://localhost:5173",
+	// 			"https://muras-auth-test.vercel.app",
+	// 			"https://muras-official.kg"
+	// 		],
+	// 		credentials: true
+	// 	})
+	// );
+
+	server.use(cors());
 
 	server.use(auth);
 
 	server.get("/", (req, res) => {
-		const user = req.user;
+		const user = req.user as User;
+		console.log(user);
 		res.status(200).send({
 			message: "Hello World!",
 			user: user || "The user is not authenticated"

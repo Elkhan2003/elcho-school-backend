@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../../plugins/prisma";
 
 interface ProductType {
+	author: string;
 	title: string;
 	price: string;
 	description: string;
@@ -14,8 +15,16 @@ interface ProductType {
 const sendProduct = async (req: Request, res: Response) => {
 	const { product }: { product: ProductType } = req.body;
 
+	if (!product) {
+		return res.status(400).send({
+			success: false,
+			error: "Product information is missing in the request body."
+		});
+	}
+
 	await prisma.product.create({
 		data: {
+			author: product.author || "",
 			title: product.title || "",
 			price: product.price || "",
 			description: product.description || "",
@@ -38,15 +47,14 @@ const getProducts = async (req: Request, res: Response) => {
 	if (productData.length > 0) {
 		const products = productData.map((product) => ({
 			id: product.id,
+			author: product.author || "",
 			title: product.title || "",
 			price: product.price || "",
 			description: product.description || "",
 			category: product.category || "",
 			image: product.image || "",
-			rating: {
-				rate: product.rate || "",
-				count: product.count || ""
-			}
+			rate: product.rate || "",
+			count: product.count || ""
 		}));
 
 		res.status(200).send(products);

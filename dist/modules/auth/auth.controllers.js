@@ -20,7 +20,7 @@ const getUser = async (req, res) => {
     }
     const userData = await prisma_1.prisma.user.findFirst({
         where: {
-            login: user.login
+            id: user.id
         }
     });
     res.status(200).send({

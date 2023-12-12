@@ -21,7 +21,7 @@ const getUser = async (req: Request, res: Response) => {
 
 	const userData = await prisma.user.findFirst({
 		where: {
-			login: user.login
+			id: user.id
 		} as User
 	});
 

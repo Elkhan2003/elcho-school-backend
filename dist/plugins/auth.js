@@ -28,7 +28,7 @@ process.env.NODE_ENV === "development"
             maxAge: 1000 * 60 * 60 * 24 * 1
         },
         store: new prisma_session_store_1.PrismaSessionStore(prisma_1.prisma, {
-            checkPeriod: 1 * 60 * 1000,
+            checkPeriod: 1 * 60 * 1000, //ms
             dbRecordIdIsSessionId: true,
             dbRecordIdFunction: undefined
         })
@@ -45,7 +45,7 @@ process.env.NODE_ENV === "development"
             maxAge: 1000 * 60 * 60 * 24 * 1
         },
         store: new prisma_session_store_1.PrismaSessionStore(prisma_1.prisma, {
-            checkPeriod: 1 * 60 * 1000,
+            checkPeriod: 1 * 60 * 1000, //ms
             dbRecordIdIsSessionId: true,
             dbRecordIdFunction: undefined
         })
