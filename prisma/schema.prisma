@@ -63,12 +63,12 @@ model Product {
   id          Int      @id @default(autoincrement())
   author      String
   title       String
-  price       String
+  price       Decimal
   description String
   category    String
   image       String
-  rate        String
-  count       String
+  rate        Decimal
+  count       Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

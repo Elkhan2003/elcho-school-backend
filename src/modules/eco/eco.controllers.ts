@@ -4,12 +4,12 @@ import { prisma } from "../../plugins/prisma";
 interface ProductType {
 	author: string;
 	title: string;
-	price: string;
+	price: number;
 	description: string;
 	category: string;
 	image: string;
-	rate: string;
-	count: string;
+	rate: number;
+	count: number;
 }
 
 const sendProduct = async (req: Request, res: Response) => {
@@ -26,12 +26,12 @@ const sendProduct = async (req: Request, res: Response) => {
 		data: {
 			author: product.author || "",
 			title: product.title || "",
-			price: product.price || "",
+			price: product.price || 0,
 			description: product.description || "",
 			category: product.category || "",
 			image: product.image || "",
-			rate: product.rate || "",
-			count: product.count || ""
+			rate: product.rate || 0,
+			count: product.count || 0
 		}
 	});
 
