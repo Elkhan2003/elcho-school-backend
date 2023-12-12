@@ -9,6 +9,7 @@ const dotenv_1 = require("dotenv");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const index_1 = __importDefault(require("./routes/index"));
+const auth_1 = require("./plugins/auth");
 const buildServer = () => {
     const server = (0, express_1.default)();
     // Middleware
@@ -29,9 +30,13 @@ const buildServer = () => {
     // 	})
     // );
     server.use((0, cors_1.default)());
+    server.use(auth_1.auth);
     server.get("/", (req, res) => {
+        const user = req.user;
+        console.log(user);
         res.status(200).send({
-            message: "Hello World!"
+            message: "Hello World!",
+            user: user || "The user is not authenticated"
         });
     });
     server.use("/api/v1", index_1.default);
