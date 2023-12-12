@@ -3,8 +3,6 @@ config();
 import express from "express";
 import cors from "cors";
 import routes from "./routes/index";
-import { User } from "./plugins/prisma";
-import { auth } from "./plugins/auth";
 
 export const buildServer = () => {
 	const server = express();
@@ -29,13 +27,9 @@ export const buildServer = () => {
 
 	server.use(cors());
 
-	server.use(auth);
-
 	server.get("/", (req, res) => {
-		const user = req.user as User;
 		res.status(200).send({
-			message: "Hello World!",
-			user: user || "The user is not authenticated"
+			message: "Hello World!"
 		});
 	});
 
