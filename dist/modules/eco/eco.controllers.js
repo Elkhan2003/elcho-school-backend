@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = require("../../plugins/prisma");
+// https://smoggy-turtleneck-lamb.cyclic.app/api/v1/get-products
+// https://smoggy-turtleneck-lamb.cyclic.app/api/v1/send-product
 const sendProduct = async (req, res) => {
-    const { product } = req.body;
+    const product = req.body;
     if (!product) {
         return res.status(400).send({
             success: false,
@@ -13,12 +15,12 @@ const sendProduct = async (req, res) => {
         data: {
             author: product.author || "",
             title: product.title || "",
-            price: product.price || "",
+            price: product.price || 0,
             description: product.description || "",
             category: product.category || "",
             image: product.image || "",
-            rate: product.rate || "",
-            count: product.count || ""
+            rate: product.rate || 0,
+            count: product.count || 0
         }
     });
     res.status(200).send({

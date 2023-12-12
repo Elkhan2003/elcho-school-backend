@@ -12,6 +12,9 @@ interface ProductType {
 	count: number;
 }
 
+// https://smoggy-turtleneck-lamb.cyclic.app/api/v1/get-products
+// https://smoggy-turtleneck-lamb.cyclic.app/api/v1/send-product
+
 const sendProduct = async (req: Request, res: Response) => {
 	const product = req.body as ProductType;
 
