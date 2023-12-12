@@ -13,7 +13,7 @@ interface ProductType {
 }
 
 const sendProduct = async (req: Request, res: Response) => {
-	const { product }: { product: ProductType } = req.body;
+	const product = req.body as ProductType;
 
 	if (!product) {
 		return res.status(400).send({
