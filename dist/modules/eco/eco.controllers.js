@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = require("../../plugins/prisma");
-// https://smoggy-turtleneck-lamb.cyclic.app/api/v1/get-products
-// https://smoggy-turtleneck-lamb.cyclic.app/api/v1/send-product
 const sendProduct = async (req, res) => {
     const product = req.body;
     if (!product) {
