@@ -7,30 +7,30 @@ const prisma_1 = require("../../plugins/prisma");
 const moment_1 = __importDefault(require("moment"));
 const sendMovie = async (req, res) => {
     const movie = req.body;
-    if (!movie) {
+    if (!movie || !movie.author || !movie.title || !movie.image) {
         return res.status(400).send({
             success: false,
-            error: "Movie information is missing in the request body."
+            error: "All fields (author, title, image) must be provided in the request body."
         });
     }
-    await prisma_1.prisma.movie.create({
+    const newMovie = await prisma_1.prisma.movie.create({
         data: {
-            author: movie.author || "unknown",
-            title: movie.title || "unknown",
-            image: movie.image || "unknown",
+            author: movie.author,
+            title: movie.title,
+            image: movie.image,
             createdAt: (0, moment_1.default)().utcOffset(6).format("YYYY-MM-DD HH:mm:ss Z"),
             updatedAt: (0, moment_1.default)().utcOffset(6).format("YYYY-MM-DD HH:mm:ss Z")
         }
     });
     res.status(200).send({
         success: true,
-        data: movie
+        data: newMovie
     });
 };
 const getMovies = async (req, res) => {
     const movieData = await prisma_1.prisma.movie.findMany();
     if (movieData.length > 0) {
-        const products = movieData.map((movie) => ({
+        const movies = movieData.map((movie) => ({
             id: movie.id,
             author: movie.author,
             title: movie.title,
@@ -38,11 +38,11 @@ const getMovies = async (req, res) => {
             createdAt: movie.createdAt,
             updatedAt: movie.updatedAt
         }));
-        res.status(200).send(products);
+        res.status(200).send(movies);
     }
     else {
         res.status(401).send({
-            message: "No products found."
+            message: "No movies found."
         });
     }
 };
@@ -87,15 +87,59 @@ const updateMovie = async (req, res) => {
 };
 const deleteMovie = async (req, res) => {
     const movieId = Number(req.params.id);
-    const deletedMovie = await prisma_1.prisma.movie.delete({
-        where: { id: movieId }
-    });
-    res.status(200).send({
-        success: true,
-        message: "Movie deleted successfully.",
-        deletedMovie
-    });
+    try {
+        const deletedMovie = await prisma_1.prisma.movie.delete({
+            where: { id: movieId }
+        });
+        if (deletedMovie) {
+            res.status(200).send({
+                success: true,
+                message: "Movie deleted successfully.",
+                deletedMovie
+            });
+        }
+        else {
+            res.status(404).send({
+                message: "No movie found with the given ID."
+            });
+        }
+    }
+    catch (error) {
+        // Handle the error when the movie is not found
+        // @ts-ignore
+        if (error.code === "P2025") {
+            res.status(404).send({
+                message: "No movie found with the given ID."
+            });
+        }
+        else {
+            // Handle other errors
+            console.error(error);
+            res.status(500).send({
+                message: "Internal Server Error"
+            });
+        }
+    }
 };
+// const deleteMovie = async (req: Request, res: Response) => {
+// 	const movieId = Number(req.params.id);
+//
+// 	const deletedMovie = await prisma.movie.delete({
+// 		where: { id: movieId }
+// 	});
+//
+// 	if (deletedMovie) {
+// 		res.status(200).send({
+// 			success: true,
+// 			message: "Movie deleted successfully.",
+// 			deletedMovie
+// 		});
+// 	} else {
+// 		res.status(404).send({
+// 			message: "No movie found with the given ID."
+// 		});
+// 	}
+// };
 exports.default = {
     sendMovie,
     getMovies,
