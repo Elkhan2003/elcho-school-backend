@@ -1,3 +1,4 @@
+process.env.TZ = "UTC+6";
 import { buildServer } from "./app";
 
 const server = buildServer();

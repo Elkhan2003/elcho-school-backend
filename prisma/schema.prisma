@@ -59,18 +59,13 @@ model Order {
   @@id([userId])
 }
 
-model Product {
-  id          Int      @id @default(autoincrement())
-  author      String
-  title       String
-  price       Decimal
-  description String
-  category    String
-  image       String
-  rate        Decimal
-  count       Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Movie {
+  id        Int    @id @default(autoincrement())
+  author    String
+  title     String
+  image     String
+  createdAt String
+  updatedAt String
 }
 
 enum UserRole {

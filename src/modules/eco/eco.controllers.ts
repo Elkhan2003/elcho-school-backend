@@ -1,60 +1,50 @@
 import { Request, Response } from "express";
 import { prisma } from "../../plugins/prisma";
+import moment from "moment";
 
-interface ProductType {
+interface MovieType {
 	author: string;
 	title: string;
-	price: number;
-	description: string;
-	category: string;
 	image: string;
-	rate: number;
-	count: number;
 }
 
-const sendProduct = async (req: Request, res: Response) => {
-	const product = req.body as ProductType;
+const sendMovie = async (req: Request, res: Response) => {
+	const movie = req.body as MovieType;
 
-	if (!product) {
+	if (!movie) {
 		return res.status(400).send({
 			success: false,
-			error: "Product information is missing in the request body."
+			error: "Movie information is missing in the request body."
 		});
 	}
 
-	await prisma.product.create({
+	await prisma.movie.create({
 		data: {
-			author: product.author || "",
-			title: product.title || "",
-			price: product.price || 0,
-			description: product.description || "",
-			category: product.category || "",
-			image: product.image || "",
-			rate: product.rate || 0,
-			count: product.count || 0
+			author: movie.author || "unknown",
+			title: movie.title || "unknown",
+			image: movie.image || "unknown",
+			createdAt: moment().utcOffset(6).format("YYYY-MM-DD HH:mm:ss Z"),
+			updatedAt: moment().utcOffset(6).format("YYYY-MM-DD HH:mm:ss Z")
 		}
 	});
 
 	res.status(200).send({
 		success: true,
-		data: product
+		data: movie
 	});
 };
 
-const getProducts = async (req: Request, res: Response) => {
-	const productData = await prisma.product.findMany();
+const getMovies = async (req: Request, res: Response) => {
+	const movieData = await prisma.movie.findMany();
 
-	if (productData.length > 0) {
-		const products = productData.map((product) => ({
-			id: product.id,
-			author: product.author || "",
-			title: product.title || "",
-			price: product.price || "",
-			description: product.description || "",
-			category: product.category || "",
-			image: product.image || "",
-			rate: product.rate || "",
-			count: product.count || ""
+	if (movieData.length > 0) {
+		const products = movieData.map((movie) => ({
+			id: movie.id,
+			author: movie.author,
+			title: movie.title,
+			image: movie.image,
+			createdAt: movie.createdAt,
+			updatedAt: movie.updatedAt
 		}));
 
 		res.status(200).send(products);
@@ -65,24 +55,70 @@ const getProducts = async (req: Request, res: Response) => {
 	}
 };
 
-const getProductId = async (req: Request, res: Response) => {
-	const productId = Number(req.params.id);
+const getMovieId = async (req: Request, res: Response) => {
+	const movieId = Number(req.params.id);
 
-	const productData = await prisma.product.findFirst({
-		where: { id: productId }
+	const movieData = await prisma.movie.findFirst({
+		where: { id: movieId }
 	});
 
-	if (productData) {
-		res.status(200).send(productData);
+	if (movieData) {
+		res.status(200).send(movieData);
 	} else {
 		res.status(404).send({
-			message: "No product found with the given ID."
+			message: "No movie found with the given ID."
 		});
 	}
 };
 
+const updateMovie = async (req: Request, res: Response) => {
+	const movieId = Number(req.params.id);
+	const updatedMovie = req.body as Partial<MovieType>;
+
+	const existingMovie = await prisma.movie.findFirst({
+		where: { id: movieId }
+	});
+
+	if (!existingMovie) {
+		return res.status(404).send({
+			message: "No movie found with the given ID."
+		});
+	}
+
+	const newMovie = await prisma.movie.update({
+		where: { id: movieId },
+		data: {
+			...existingMovie,
+			...updatedMovie,
+			updatedAt: moment().utcOffset(6).format("YYYY-MM-DD HH:mm:ss Z")
+		}
+	});
+
+	res.status(200).send({
+		success: true,
+		message: "Movie updated successfully.",
+		updatedMovie: newMovie
+	});
+};
+
+const deleteMovie = async (req: Request, res: Response) => {
+	const movieId = Number(req.params.id);
+
+	const deletedMovie = await prisma.movie.delete({
+		where: { id: movieId }
+	});
+
+	res.status(200).send({
+		success: true,
+		message: "Movie deleted successfully.",
+		deletedMovie
+	});
+};
+
 export default {
-	sendProduct,
-	getProducts,
-	getProductId
+	sendMovie,
+	getMovies,
+	getMovieId,
+	updateMovie,
+	deleteMovie
 };

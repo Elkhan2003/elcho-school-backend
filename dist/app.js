@@ -33,7 +33,6 @@ const buildServer = () => {
     server.use(auth_1.auth);
     server.get("/", (req, res) => {
         const user = req.user;
-        console.log(user);
         res.status(200).send({
             message: "Hello World!",
             user: user || "The user is not authenticated"
