@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = require("../../plugins/prisma");
 const moment_1 = __importDefault(require("moment"));
+// ! test
 const sendMovie = async (req, res) => {
     const movie = req.body;
     if (!movie || !movie.author || !movie.title || !movie.image) {
