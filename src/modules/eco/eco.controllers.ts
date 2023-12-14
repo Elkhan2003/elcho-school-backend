@@ -35,7 +35,7 @@ const sendMovie = async (req: Request, res: Response) => {
 	if (existingMovieTitle || existingMovieImage) {
 		return res.status(400).send({
 			success: false,
-			error: "Movie with the same title already exists."
+			message: "Movie with the same title already exists."
 		});
 	}
 

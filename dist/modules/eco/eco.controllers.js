@@ -27,7 +27,7 @@ const sendMovie = async (req, res) => {
     if (existingMovieTitle || existingMovieImage) {
         return res.status(400).send({
             success: false,
-            error: "Movie with the same title already exists."
+            message: "Movie with the same title already exists."
         });
     }
     const newMovie = await prisma_1.prisma.movie.create({
