@@ -14,7 +14,7 @@ const sendMovie = async (req: Request, res: Response) => {
 	if (!movie || !movie.author || !movie.title || !movie.image) {
 		return res.status(400).send({
 			success: false,
-			error:
+			message:
 				"All fields (author, title, image) must be provided in the request body."
 		});
 	}

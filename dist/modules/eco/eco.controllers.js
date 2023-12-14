@@ -10,7 +10,7 @@ const sendMovie = async (req, res) => {
     if (!movie || !movie.author || !movie.title || !movie.image) {
         return res.status(400).send({
             success: false,
-            error: "All fields (author, title, image) must be provided in the request body."
+            message: "All fields (author, title, image) must be provided in the request body."
         });
     }
     // Check if the movie with the same title already exists
