@@ -96,6 +96,13 @@ const updateMovie = async (req: Request, res: Response) => {
 	const movieId = Number(req.params.id);
 	const updatedMovie = req.body as Partial<MovieType>;
 
+	// Check for empty strings in the updatedMovie object
+	if (Object.values(updatedMovie).some((value) => value === "")) {
+		return res.status(400).send({
+			message: "Movie properties cannot be updated to empty strings."
+		});
+	}
+
 	const existingMovie = await prisma.movie.findFirst({
 		where: { id: movieId }
 	});
