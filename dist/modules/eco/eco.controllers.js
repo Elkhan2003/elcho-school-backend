@@ -41,7 +41,7 @@ const sendMovie = async (req, res) => {
     });
     res.status(200).send({
         success: true,
-        data: newMovie
+        message: newMovie
     });
 };
 const getMovies = async (req, res) => {
