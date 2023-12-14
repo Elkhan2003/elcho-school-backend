@@ -13,6 +13,23 @@ const sendMovie = async (req, res) => {
             error: "All fields (author, title, image) must be provided in the request body."
         });
     }
+    // Check if the movie with the same title already exists
+    const existingMovieTitle = await prisma_1.prisma.movie.findFirst({
+        where: {
+            title: movie.title
+        }
+    });
+    const existingMovieImage = await prisma_1.prisma.movie.findFirst({
+        where: {
+            image: movie.image
+        }
+    });
+    if (existingMovieTitle || existingMovieImage) {
+        return res.status(400).send({
+            success: false,
+            error: "Movie with the same title already exists."
+        });
+    }
     const newMovie = await prisma_1.prisma.movie.create({
         data: {
             author: movie.author,

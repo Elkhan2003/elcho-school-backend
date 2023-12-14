@@ -19,6 +19,26 @@ const sendMovie = async (req: Request, res: Response) => {
 		});
 	}
 
+	// Check if the movie with the same title already exists
+	const existingMovieTitle = await prisma.movie.findFirst({
+		where: {
+			title: movie.title
+		}
+	});
+
+	const existingMovieImage = await prisma.movie.findFirst({
+		where: {
+			image: movie.image
+		}
+	});
+
+	if (existingMovieTitle || existingMovieImage) {
+		return res.status(400).send({
+			success: false,
+			error: "Movie with the same title already exists."
+		});
+	}
+
 	const newMovie = await prisma.movie.create({
 		data: {
 			author: movie.author,
