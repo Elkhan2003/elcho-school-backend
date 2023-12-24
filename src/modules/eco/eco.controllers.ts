@@ -8,8 +8,6 @@ interface MovieType {
 	image: string;
 }
 
-// ! test
-
 const sendMovie = async (req: Request, res: Response) => {
 	const movie = req.body as MovieType;
 
