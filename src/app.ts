@@ -28,7 +28,8 @@ export const buildServer = () => {
 				"http://localhost:5179",
 				"http://localhost:5180",
 				"https://muras-auth-test.vercel.app",
-				"https://muras-official.kg"
+				"https://muras-official.kg",
+				"https://iskender911.vercel.app"
 			],
 			credentials: true
 		})
