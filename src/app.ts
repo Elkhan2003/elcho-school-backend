@@ -9,6 +9,7 @@ import { auth } from "./plugins/auth";
 export const buildServer = () => {
 	const server = express();
 
+	
 	// Middleware
 	server.use(express.urlencoded({ extended: true }));
 	server.use(express.json());
