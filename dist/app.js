@@ -15,21 +15,26 @@ const buildServer = () => {
     // Middleware
     server.use(express_1.default.urlencoded({ extended: true }));
     server.use(express_1.default.json());
-    // server.use(
-    // 	cors({
-    // 		origin: [
-    // 			"http://localhost:3000",
-    // 			"http://localhost:5000",
-    // 			"http://127.0.0.1:3000",
-    // 			"http://127.0.0.1:5000",
-    // 			"http://localhost:5173",
-    // 			"https://muras-auth-test.vercel.app",
-    // 			"https://muras-official.kg"
-    // 		],
-    // 		credentials: true
-    // 	})
-    // );
-    server.use((0, cors_1.default)());
+    server.use((0, cors_1.default)({
+        origin: [
+            "http://localhost:3000",
+            "http://localhost:5000",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5000",
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "http://localhost:5175",
+            "http://localhost:5176",
+            "http://localhost:5177",
+            "http://localhost:5178",
+            "http://localhost:5179",
+            "http://localhost:5180",
+            "https://muras-auth-test.vercel.app",
+            "https://muras-official.kg"
+        ],
+        credentials: true
+    }));
+    // server.use(cors());
     server.use(auth_1.auth);
     server.get("/", (req, res) => {
         const user = req.user;
