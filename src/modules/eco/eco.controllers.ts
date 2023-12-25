@@ -70,7 +70,7 @@ const getMovies = async (req: Request, res: Response) => {
 
 		res.status(200).send(movies);
 	} else {
-		res.status(200).send({
+		res.status(401).send({
 			message: "No movies found."
 		});
 	}
